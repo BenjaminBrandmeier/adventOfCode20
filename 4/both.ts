@@ -17,16 +17,13 @@ const passportValidStrict = (p: PassportCandidate) =>
     new RegExp(/(amb|blu|brn|gry|grn|hzl|oth)/).test(p.ecl) &&
     new RegExp(/^\d{9}$/).test(p.pid);
 
-function getValueForTag(s: string, tag: string) {
-    let result = s.match(new RegExp(`${tag}:(.+?)( |$)`));
-    return !!result ? result[1] : undefined;
-}
+const getValueForTag = (s: string, tag: string): string => s.split(new RegExp(`${tag}:(.+?)( |$)`))[1];
 
-const parseInput = (input: string[]) => input.map(p => ({
+const parseInput = (input: string[]): PassportCandidate[] => input.map(p => ({
     byr: getValueForTag(p, 'byr'), iyr: getValueForTag(p, 'iyr'), eyr: getValueForTag(p, 'eyr'),
     hgt: getValueForTag(p, 'hgt'), hcl: getValueForTag(p, 'hcl'), ecl: getValueForTag(p, 'ecl'),
     pid: getValueForTag(p, 'pid'), cid: getValueForTag(p, 'cid')
-} as PassportCandidate));
+}));
 
 async function readInput(): Promise<any> {
     return (await Deno.readTextFile('input.txt'))
