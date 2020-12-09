@@ -1,21 +1,19 @@
 function findBrokenNumber(data: number[], preamble = 25): number {
     let lowerBound = 0; let found = false;
-    return data.slice(preamble, data.length).find(n => {
+    return data.slice(preamble, data.length).find(candidate => {
         for (let a of data.slice(lowerBound, lowerBound + preamble)) {
             for (let b of data.slice(lowerBound, lowerBound + preamble)) {
-                if (n === a + b) {
+                if (candidate === a + b) {
                     found = true;
                 }
             }
         }
-        if (!found) {
-            console.log("Didn't find anything for:", n); return n;
-        }
+        if (!found) return candidate;
         lowerBound++; found = false;
     })!
 }
 
-function findEncryptionWeakness(data: number[], invalidNumber: number): number {
+function findEncryptionWeakness(data: number[], invalidNumber: number) {
     let sumOfContiguousBounds = 0;
     data.forEach((a, idx) => {
         let acc = 0; let min = Number.MAX_VALUE; let max = Number.MIN_VALUE;
@@ -27,10 +25,8 @@ function findEncryptionWeakness(data: number[], invalidNumber: number): number {
             }
         });
     });
-    return sumOfContiguousBounds;
+    return {sumOfContiguousBounds, invalidNumber};
 }
 
-const readInput = async (): Promise<number[]> => (await Deno.readTextFile('input.txt')).split(/\n/).map(Number);
-
-let data = await readInput();
-console.log('Encryption weakness:', findEncryptionWeakness(data, findBrokenNumber(data, 25)))
+let data: number[] = (await Deno.readTextFile('input.txt')).split(/\n/).map(Number);
+console.log(findEncryptionWeakness(data, findBrokenNumber(data, 25)));
